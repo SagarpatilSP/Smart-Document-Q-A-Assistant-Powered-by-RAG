@@ -27,7 +27,7 @@ The system follows a standard RAG workflow to ensure accuracy and contextual rel
 │   └── s3_utils.py     # AWS S3 upload/download operations
 ├── requirements.txt    # Project dependencies
 └── .gitignore          # Version control exclusions
-
+```
 
 Installation
 Clone the repository:
