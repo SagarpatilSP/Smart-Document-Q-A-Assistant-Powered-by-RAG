@@ -1,13 +1,18 @@
 import pdfplumber
 import re
 
+import pdfplumber
+
 def pdf_to_text(pdf_file):
-    txt = []
+    pages = []
     with pdfplumber.open(pdf_file) as pdf:
-        for p in pdf.pages:
+        for i, p in enumerate(pdf.pages):
             page_text = p.extract_text() or ""
-            txt.append(page_text)
-    return "\n".join(txt)
+            pages.append({
+                "page": i + 1,
+                "text": page_text
+            })
+    return pages
 
 def clean_text(text):
     text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
@@ -16,13 +21,27 @@ def clean_text(text):
     text = re.sub(r"[ \t]+", " ", text)
     return text.strip()
 
-def chunk_text(text, chunk_size=1200, overlap=200):
+def chunk_text(pages, chunk_size=1200, overlap=200):
+
     chunks = []
-    start = 0
-    while start < len(text):
-        end = start + chunk_size
-        chunks.append(text[start:end].strip())
-        start = end - overlap
-        if start < 0:
-            start = 0
-    return [c for c in chunks if len(c) > 30]
+
+    for page in pages:
+        text = clean_text(page["text"])
+        page_no = page["page"]
+
+        start = 0
+        while start < len(text):
+            end = start + chunk_size
+            chunk = text[start:end].strip()
+
+            if len(chunk) > 30:
+                chunks.append({
+                    "page": page_no,
+                    "text": chunk
+                })
+
+            start = end - overlap
+            if start < 0:
+                start = 0
+
+    return chunks
