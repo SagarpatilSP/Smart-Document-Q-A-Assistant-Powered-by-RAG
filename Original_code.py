@@ -249,7 +249,7 @@ def build_memory_context(chat_history, last_n=6):
 
 from groq import Groq
 
-client = Groq(api_key="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")
+client = Groq(api_key="")
 
 completion = client.chat.completions.create(
     model="llama-3.1-8b-instant",
